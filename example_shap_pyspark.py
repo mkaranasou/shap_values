@@ -58,7 +58,7 @@ def calculate_shapley_values(
             f_index = ordered_features.index(f)
             new_value = x_interest[f_index]
             x_plus_j[f_index] = new_value
-            if i > f_i:  # we skipped j
+            if i > 0:  # we skipped j
                 x_minus_j[f_index] = new_value
 
         # minus must be first because of lag
