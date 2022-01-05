@@ -44,13 +44,12 @@ def calculate_shapley_values(
         The instance  x−j is the same as  x+j, but in addition
         has feature j replaced by the value for feature j from the sample z
         """
-        x_interest = ROW_OF_INTEREST_BROADCAST.value
+        x_interest = ROW_OF_INTEREST_BROADCAST.value.features
         ordered_features = ORDERED_FEATURE_NAMES.value
         x_minus_j = list(z_features).copy()
         x_plus_j = list(z_features).copy()
         f_i = curr_feature_perm.index(feature_j)
-        after_j = False
-        for f in curr_feature_perm[f_i:]:
+        for i, f in enumerate(curr_feature_perm[f_i:]):
             # replace z feature values with x of interest feature values
             # iterate features in current permutation until one before j
             # x-j = [z1, z2, ... zj-1, xj, xj+1, ..., xN]
@@ -59,9 +58,8 @@ def calculate_shapley_values(
             f_index = ordered_features.index(f)
             new_value = x_interest[f_index]
             x_plus_j[f_index] = new_value
-            if after_j:
+            if i > f_i:  # we skipped j
                 x_minus_j[f_index] = new_value
-            after_j = True
 
         # minus must be first because of lag
         return Vectors.dense(x_minus_j), Vectors.dense(x_plus_j)
